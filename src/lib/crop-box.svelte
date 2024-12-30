@@ -1,8 +1,12 @@
 <script lang="ts">
+	type Coordinate = { x: number; y: number };
+
+	type UpdateProps = { startPosition: Coordinate; newPosition: Coordinate };
+
 	type Props = {
 		width: number;
 		height: number;
-		update?: ({ x, y }: { x: number; y: number }) => void;
+		update?: (props: UpdateProps) => void;
 	};
 
 	let { width, height, update }: Props = $props();
@@ -70,7 +74,7 @@
 				isDragging = false;
 				document.removeEventListener('mousemove', handleMouseMove);
 				document.removeEventListener('mouseup', handleMouseUp);
-				update?.({ ...startPosition });
+				update?.({ startPosition, newPosition });
 			}
 		};
 
@@ -86,22 +90,21 @@
 
 <div
 	use:drag
-	style="width: {width}px; height: {width}px"
+	style="width: {width}px; height: {height}px"
 	class={['crop-box', 'absolute inset-0']}
 ></div>
 
 <style>
 	.crop-box {
 		--color: #60a5fa;
-    --size: 1.5px;
+		--size: 1.5px;
 
-    background-size: 25% 25%;
-		background-image: 
-      linear-gradient(to right, var(--color) var(--size), transparent var(--size)),
+		background-size: 25% 25%;
+		background-image: linear-gradient(to right, var(--color) var(--size), transparent var(--size)),
 			linear-gradient(to bottom, var(--color) var(--size), transparent var(--size));
 
-    border-right: var(--size)solid var(--color);
-    border-bottom: var(--size)solid var(--color);
-    box-sizing: border-box;
+		border-right: var(--size) solid var(--color);
+		border-bottom: var(--size) solid var(--color);
+		box-sizing: border-box;
 	}
 </style>
