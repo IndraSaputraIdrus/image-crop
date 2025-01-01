@@ -36,7 +36,6 @@
 	});
 </script>
 
-<main class="container mx-auto py-10 h-full">
 	<div class="grid grid-cols-2 gap-4">
 		<div class="p-10 bg-slate-100 max-h-full flex items-center justify-center">
 			<div class="relative" style="width: auto">
@@ -79,4 +78,3 @@
 			<Result images={image} {position} />
 		{/if}
 	</div>
-</main>
