@@ -4,7 +4,6 @@
 	let files: FileList | undefined = $state();
 
 	const accept = ['.jpg', '.jpeg', '.png'];
-
 	function onsubmit(e: SubmitEvent) {
 		e.preventDefault();
 	}

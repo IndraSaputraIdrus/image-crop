@@ -5,6 +5,9 @@
 	import CropBox from '$lib/crop-box.svelte';
 	import Forms from '$lib/forms.svelte';
 	import Result from '$lib/result.svelte';
+
+  import {store} from "$lib/store.svelte"
+
 	let imageElement: HTMLImageElement | null = $state(null);
 
 	let originalSize = $state({ width: 0, height: 0 });
@@ -36,45 +39,46 @@
 	});
 </script>
 
-	<div class="grid grid-cols-2 gap-4">
-		<div class="p-10 bg-slate-100 max-h-full flex items-center justify-center">
-			<div class="relative" style="width: auto">
-				<img
-					src={imgTemp}
-					draggable="false"
-					bind:clientWidth={imgSize.width}
-					bind:clientHeight={imgSize.height}
-					class="aspect-square max-h-96 w-auto select-none"
-					alt=""
-				/>
-				{#if isLoad}
-					<CropBox
-						update={({ newPosition, startPosition }) => {
-							position.startX = startPosition.x;
-							position.startY = startPosition.y;
-							position.endX = newPosition.x;
-							position.endY = newPosition.y;
-						}}
-						width={customSize.width}
-						height={customSize.height}
-					/>
-				{/if}
-			</div>
-		</div>
-		<div class="p-10">
-			<Forms
-				bind:width={customSize.width}
-				bind:height={customSize.height}
-				bind:lock={lockRatio}
-				maxWidth={imgSize.width}
-				maxHeight={imgSize.height}
+<div class="grid grid-cols-2 gap-4">
+	<div class="p-10 bg-slate-100 max-h-full flex items-center justify-center">
+		<div class="relative" style="width: auto">
+			<img
+				src={imgTemp}
+				draggable="false"
+				bind:clientWidth={imgSize.width}
+				bind:clientHeight={imgSize.height}
+				class="aspect-square max-h-96 w-auto select-none"
+				alt=""
 			/>
+			{#if isLoad}
+				<CropBox
+					update={({ newPosition, startPosition }) => {
+						position.startX = startPosition.x;
+						position.startY = startPosition.y;
+						position.endX = newPosition.x;
+						position.endY = newPosition.y;
+					}}
+					width={customSize.width}
+					height={customSize.height}
+				/>
+			{/if}
 		</div>
 	</div>
-
-	<div class="pb-10">
-		<h2>Canvas</h2>
-		{#if image}
-			<Result images={image} {position} />
-		{/if}
+	<div class="p-10">
+		<Forms
+			bind:width={customSize.width}
+			bind:height={customSize.height}
+			bind:lock={lockRatio}
+			maxWidth={imgSize.width}
+			maxHeight={imgSize.height}
+		/>
 	</div>
+</div>
+
+<div class="pb-10">
+	<h2>Canvas</h2>
+	<p>{JSON.stringify(store)}</p>
+	{#if image}
+		<Result images={image} {position} />
+	{/if}
+</div>

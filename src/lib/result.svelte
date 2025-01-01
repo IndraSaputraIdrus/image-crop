@@ -13,7 +13,7 @@
 
 	let canvasElement: HTMLCanvasElement | null = $state(null);
 
-  const drawCanvas = () => {
+	const drawCanvas = () => {
 		if (canvasElement) {
 			const context = canvasElement.getContext('2d');
 			if (!context) return;
@@ -21,21 +21,28 @@
 			const newWidth = position.endX - position.startX;
 			const newHeight = position.endY - position.startY;
 
-      console.log({newHeight, newWidth, ...position})
+			console.log({ newHeight, newWidth, ...position });
 
-			canvasElement.width = images.width
-			canvasElement.height = images.height
+			canvasElement.width = images.width;
+			canvasElement.height = images.height;
 
 			context.clearRect(0, 0, canvasElement.width, canvasElement.height);
-			context.drawImage(images, position.startX, position.startY, newWidth, newHeight)
+			context.drawImage(images, 0, 0);
 		}
-  }
+	};
 
 	$effect(() => {
-    if(position) {
-      drawCanvas()
-    }
+		if (position) {
+			drawCanvas();
+		}
 	});
 </script>
 
-<canvas data-test={position.startX} bind:this={canvasElement}></canvas>
+<div class='relative'>
+	<canvas bind:this={canvasElement}></canvas>
+  <div class={[
+    'bg-red-500 absolute',
+    'left-[220.5px] top-[158px]',
+
+  ]}>Crop</div>
+</div>

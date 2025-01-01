@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { store } from '$lib/store.svelte';
+
 	type Coordinate = { x: number; y: number };
 
 	type UpdateProps = { startPosition: Coordinate; newPosition: Coordinate };
@@ -67,6 +69,11 @@
 			if (newTop >= 0 && newTop + elementRect.height <= parentRect.height) {
 				element.style.top = `${newTop}px`;
 			}
+
+			store.top = elementRect.top
+      store.left = elementRect.left
+      store.width = elementRect.height
+      store.heigth = elementRect.y
 		};
 
 		const handleMouseUp = () => {
