@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 
 	let files: FileList | undefined = $state();
-
 	const accept = ['.jpg', '.jpeg', '.png'];
+
 	function onsubmit(e: SubmitEvent) {
 		e.preventDefault();
 	}
@@ -16,25 +16,33 @@
 	});
 </script>
 
-<div class="h-full flex justify-center flex-col gap-10">
-	<h1 class="text-6xl font-semibold text-center">Image Crop Online</h1>
+<div class="h-full grid place-content-center">
+	<div class='text-foreground p-10 rounded flex flex-col gap-10'>
+		<div class="space-y-5 mx-auto text-center">
+			<h1 class="text-3xl md:text-5xl font-semibold">Cropify Your Images.</h1>
+			<p class="text-base md:text-lg text-muted max-w-lg">
+				Quick and easy image cropping, right in your browser.
+			</p>
+		</div>
 
-	<form {onsubmit} class="flex flex-col gap-5 max-w-sm mx-auto w-full">
-		<label
-			class={[
-				'w-full bg-blue-300 text-blue-700 p-2 font-bold rounded text-center',
-				'transition',
-				'hover:bg-blue-200 hover:cursor-pointer'
-			]}
-		>
-			<span>Upload image</span>
-			<input
-				bind:files
-				type="file"
-				accept={accept.join(',')}
-				placeholder="Upload image"
-				class="hidden"
-			/>
-		</label>
-	</form>
+		<form {onsubmit} class='flex items-center justify-center'>
+			<label
+				class={[
+          'mx-auto bg-foreground text-primary px-4 py-2 rounded-lg',
+					'transition ease-in-out duration-300',
+          'font-semibold',
+					'hover:bg-foreground/70 hover:cursor-pointer'
+				]}
+			>
+				<span>Upload image</span>
+				<input
+					bind:files
+					type="file"
+					accept={accept.join(',')}
+					placeholder="Upload image"
+					class="hidden"
+				/>
+			</label>
+		</form>
+	</div>
 </div>

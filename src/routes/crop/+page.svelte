@@ -7,20 +7,20 @@
 	let imageOffsetWidth = $state(0);
 	let imageOffsetHeight = $state(0);
 	let isImgLoaded = $derived(imageOffsetWidth > 0 || imageOffsetHeight > 0);
-  let image = $derived(page.url.searchParams.get('image'))
+	let image = $derived(page.url.searchParams.get('image'));
 
   $effect(() => {
     if(!image) {
-      goto('/')
+      goto("/")
     }
   })
 
 	$effect(() => {
 		store.container.offsetWidth = imageOffsetWidth;
 		store.container.offsetHeight = imageOffsetHeight;
-    store.cropBox.offsetWidth = imageOffsetWidth;
-    store.cropBox.offsetHeight = imageOffsetHeight
-    store.image = image
+		store.cropBox.offsetWidth = imageOffsetWidth;
+		store.cropBox.offsetHeight = imageOffsetHeight;
+		store.image = image;
 	});
 </script>
 

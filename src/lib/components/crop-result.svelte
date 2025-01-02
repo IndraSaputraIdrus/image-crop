@@ -50,14 +50,13 @@
 	}
 
 	$effect(() => {
-		if (!imageUrl) {
-			throw goto('/');
+		if (imageUrl) {
+			canvas = document.createElement('canvas');
+			context = canvas.getContext('2d')!;
+			image = new Image();
+			image.src = imageUrl;
+			image.onload = () => (isLoadedImg = true);
 		}
-		canvas = document.createElement('canvas');
-		context = canvas.getContext('2d')!;
-		image = new Image();
-		image.src = imageUrl;
-		image.onload = () => (isLoadedImg = true);
 	});
 
 	function cropAndDownload() {
