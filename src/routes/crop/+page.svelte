@@ -1,84 +1,36 @@
 <script lang="ts">
-	//import { page } from '$app/state';
-	//let src: string | null = $derived(page.url.searchParams.get('image'));
-	import imgTemp from '$lib/crop_image.jpg';
-	import CropBox from '$lib/crop-box.svelte';
-	import Forms from '$lib/forms.svelte';
-	import Result from '$lib/result.svelte';
+	import NekoImg from '$lib/crop_image.jpg';
+	import { CropBox } from '$lib/components';
 
-  import {store} from "$lib/store.svelte"
-
-	let imageElement: HTMLImageElement | null = $state(null);
-
-	let originalSize = $state({ width: 0, height: 0 });
-	let customSize = $state({ width: 200, height: 200 });
-	let lockRatio = $state(false);
-	let isLoad = $state(false);
-
-	let imgSize = $state({ width: 0, height: 0 });
-
-	let position = $state({
-		startX: 0,
-		startY: 0,
-		endX: 0,
-		endY: 0
-	});
-
-	let image: HTMLImageElement | null = $state(null);
-
-	$effect(() => {
-		if (!image) {
-			image = new Image();
-			image.src = imgTemp;
-			image.onload = () => {
-				const { width, height } = image!;
-				originalSize = { height, width };
-				isLoad = true;
-			};
-		}
-	});
+	let imageOffsetWidth = $state(0);
+	let imageOffsetHeight = $state(0);
+	let isImgLoaded = $derived(imageOffsetWidth > 0 || imageOffsetHeight > 0);
 </script>
 
-<div class="grid grid-cols-2 gap-4">
-	<div class="p-10 bg-slate-100 max-h-full flex items-center justify-center">
-		<div class="relative" style="width: auto">
-			<img
-				src={imgTemp}
-				draggable="false"
-				bind:clientWidth={imgSize.width}
-				bind:clientHeight={imgSize.height}
-				class="aspect-square max-h-96 w-auto select-none"
-				alt=""
-			/>
-			{#if isLoad}
-				<CropBox
-					update={({ newPosition, startPosition }) => {
-						position.startX = startPosition.x;
-						position.startY = startPosition.y;
-						position.endX = newPosition.x;
-						position.endY = newPosition.y;
-					}}
-					width={customSize.width}
-					height={customSize.height}
-				/>
-			{/if}
-		</div>
-	</div>
-	<div class="p-10">
-		<Forms
-			bind:width={customSize.width}
-			bind:height={customSize.height}
-			bind:lock={lockRatio}
-			maxWidth={imgSize.width}
-			maxHeight={imgSize.height}
+<div class="grid grid-cols-2">
+	<div class="stack flex items-center justify-center">
+		<img
+			bind:offsetWidth={imageOffsetWidth}
+			bind:offsetHeight={imageOffsetHeight}
+			src={NekoImg}
+			class="max-h-96 w-auto"
+			alt="neko"
 		/>
+		{#if isImgLoaded}
+			<div style:width="{imageOffsetWidth}px" style:height="{imageOffsetHeight}px">
+				<CropBox />
+			</div>
+		{/if}
 	</div>
 </div>
 
-<div class="pb-10">
-	<h2>Canvas</h2>
-	<p>{JSON.stringify(store)}</p>
-	{#if image}
-		<Result images={image} {position} />
-	{/if}
-</div>
+<style>
+	.stack {
+		display: grid;
+		place-content: center;
+
+		> * {
+			grid-area: 1 / 1;
+		}
+	}
+</style>
