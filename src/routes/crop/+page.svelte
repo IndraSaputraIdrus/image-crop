@@ -1,10 +1,27 @@
 <script lang="ts">
-	import NekoImg from '$lib/crop_image.jpg';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { CropBox, CropResult, Forms } from '$lib/components';
+	import { store } from '$lib/store.svelte';
 
 	let imageOffsetWidth = $state(0);
 	let imageOffsetHeight = $state(0);
 	let isImgLoaded = $derived(imageOffsetWidth > 0 || imageOffsetHeight > 0);
+  let image = $derived(page.url.searchParams.get('image'))
+
+  $effect(() => {
+    if(!image) {
+      goto('/')
+    }
+  })
+
+	$effect(() => {
+		store.container.offsetWidth = imageOffsetWidth;
+		store.container.offsetHeight = imageOffsetHeight;
+    store.cropBox.offsetWidth = imageOffsetWidth;
+    store.cropBox.offsetHeight = imageOffsetHeight
+    store.image = image
+	});
 </script>
 
 <div class="grid grid-cols-2">
@@ -12,7 +29,7 @@
 		<img
 			bind:offsetWidth={imageOffsetWidth}
 			bind:offsetHeight={imageOffsetHeight}
-			src={NekoImg}
+			src={image}
 			class="max-h-96 w-auto"
 			alt="neko"
 		/>
@@ -23,12 +40,12 @@
 		{/if}
 	</div>
 
-  <div class='grid place-content-center'>
-    <CropResult />
-  </div>
+	<div class="grid place-content-center">
+		<CropResult />
+	</div>
 </div>
 
-<Forms />
+<Forms maxWidth={imageOffsetWidth} maxHeight={imageOffsetHeight} />
 
 <style>
 	.stack {

@@ -1,14 +1,10 @@
-type Update = ({x, y}: {x: number, y: number}) => void
+type Update = ({ x, y }: { x: number; y: number }) => void;
 
 export const drag = (element: HTMLElement, update?: Update) => {
 	const start = { x: 0, y: 0 };
 	const current = { x: 0, y: 0 };
 
 	let isDragging = false;
-
-  // Get container and draggable dimensions
-  const containerRect = element.parentElement!.getBoundingClientRect();
-  const draggableRect = element.getBoundingClientRect();
 
 	const handleMouseDown = (e: MouseEvent) => {
 		e.preventDefault();
@@ -35,6 +31,9 @@ export const drag = (element: HTMLElement, update?: Update) => {
 		let newX = current.x + dx;
 		let newY = current.y + dy;
 
+		// Get container and draggable dimensions
+		const containerRect = element.parentElement!.getBoundingClientRect();
+		const draggableRect = element.getBoundingClientRect();
 
 		// Enforce boundaries
 		const maxX = containerRect.width - draggableRect.width;
@@ -43,6 +42,8 @@ export const drag = (element: HTMLElement, update?: Update) => {
 		newX = Math.max(0, Math.min(newX, maxX));
 		newY = Math.max(0, Math.min(newY, maxY));
 
+		console.log({ newX, newY, maxY, maxX });
+
 		// Update current positions
 		current.x = newX;
 		current.y = newY;
@@ -50,7 +51,7 @@ export const drag = (element: HTMLElement, update?: Update) => {
 		start.x = e.clientX;
 		start.y = e.clientY;
 
-    update?.({x: current.x, y: current.y})
+		update?.({ x: current.x, y: current.y });
 	};
 
 	const handleMouseUp = () => {
