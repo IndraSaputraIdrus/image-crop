@@ -1,6 +1,6 @@
 <script lang="ts">
 	import NekoImg from '$lib/crop_image.jpg';
-	import { CropBox } from '$lib/components';
+	import { CropBox, CropResult, Forms } from '$lib/components';
 
 	let imageOffsetWidth = $state(0);
 	let imageOffsetHeight = $state(0);
@@ -22,7 +22,13 @@
 			</div>
 		{/if}
 	</div>
+
+  <div class='grid place-content-center'>
+    <CropResult />
+  </div>
 </div>
+
+<Forms />
 
 <style>
 	.stack {

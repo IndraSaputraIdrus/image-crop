@@ -1,6 +1,8 @@
 export const store = $state({
-	left: 0,
-	top: 0,
-	width: 0,
-	heigth: 0
+	x: 0,
+	y: 0,
+  cropBox: {
+    offsetWidth: 0,
+    offsetHeight: 0
+  }
 });
