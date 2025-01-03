@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { CropBox, CropResult, Forms } from '$lib/components';
-	import LoadingIcon from '$lib/components/loading-icon.svelte';
+	import { CropBox, CropResult, Forms, ImagePreview, LoadingIcon } from '$lib/components';
 	import { store } from '$lib/store.svelte';
 	import { fade } from 'svelte/transition';
 
@@ -47,13 +46,9 @@
 		</div>
 	{:else}
 		<div in:fade={{ duration: 200 }} class="stack flex items-center justify-center col-span-3">
-			<img
-				bind:offsetWidth={imageOffsetWidth}
-				bind:offsetHeight={imageOffsetHeight}
-				src={image}
-				class="max-h-96 w-auto"
-				alt="neko"
-			/>
+			<div>
+				<ImagePreview bind:width={imageOffsetWidth} bind:height={imageOffsetHeight} src={image!} />
+			</div>
 			{#if isImgLoaded}
 				<div style:width="{imageOffsetWidth}px" style:height="{imageOffsetHeight}px">
 					<CropBox />
