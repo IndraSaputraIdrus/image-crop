@@ -2,7 +2,9 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { CropBox, CropResult, Forms } from '$lib/components';
+	import LoadingIcon from '$lib/components/loading-icon.svelte';
 	import { store } from '$lib/store.svelte';
+	import { fade } from 'svelte/transition';
 
 	let imageOffsetWidth = $state(0);
 	let imageOffsetHeight = $state(0);
@@ -38,9 +40,13 @@
 	});
 </script>
 
-{#if !isLoading}
-	<div class="grid grid-cols-4 h-full">
-		<div class="stack flex items-center justify-center col-span-3">
+<div class="grid grid-cols-4 h-full">
+	{#if isLoading}
+		<div class="text-muted col-span-4 place-self-center">
+			<LoadingIcon class="size-16 animate-spin" />
+		</div>
+	{:else}
+		<div in:fade={{ duration: 200 }} class="stack flex items-center justify-center col-span-3">
 			<img
 				bind:offsetWidth={imageOffsetWidth}
 				bind:offsetHeight={imageOffsetHeight}
@@ -54,13 +60,12 @@
 				</div>
 			{/if}
 		</div>
-
-		<div class="grid place-content-center gap-5">
+		<div in:fade={{ duration: 200 }} class="grid place-content-center gap-5">
 			<Forms maxWidth={store.image.offsetWidth} maxHeight={store.image.offsetHeight} />
 			<CropResult />
 		</div>
-	</div>
-{/if}
+	{/if}
+</div>
 
 <style>
 	.stack {
