@@ -15,8 +15,6 @@ export const drag = (element: HTMLElement, update?: Update) => {
 		start.x = e.clientX;
 		start.y = e.clientY;
 
-		element.style.cursor = 'grabbing';
-
 		document.addEventListener('mousemove', handleMouseMove);
 		document.addEventListener('mouseup', handleMouseUp);
 	};

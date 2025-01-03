@@ -8,6 +8,7 @@
 	let imageOffsetHeight = $state(0);
 	let isImgLoaded = $derived(imageOffsetWidth > 0 || imageOffsetHeight > 0);
 	let image = $derived(page.url.searchParams.get('image'));
+	let isLoading = $state(true);
 
 	$effect(() => {
 		if (!image) {
@@ -18,6 +19,10 @@
 	$effect(() => {
 		const imageOriginal = new Image();
 		imageOriginal.src = image!;
+
+		imageOriginal.onload = () => {
+			isLoading = false;
+		};
 
 		imageOriginal.onerror = () => {
 			goto('/');
@@ -33,27 +38,29 @@
 	});
 </script>
 
-<div class="grid grid-cols-4 h-full">
-	<div class="stack flex items-center justify-center col-span-3">
-		<img
-			bind:offsetWidth={imageOffsetWidth}
-			bind:offsetHeight={imageOffsetHeight}
-			src={image}
-			class="max-h-96 w-auto"
-			alt="neko"
-		/>
-		{#if isImgLoaded}
-			<div style:width="{imageOffsetWidth}px" style:height="{imageOffsetHeight}px">
-				<CropBox />
-			</div>
-		{/if}
-	</div>
+{#if !isLoading}
+	<div class="grid grid-cols-4 h-full">
+		<div class="stack flex items-center justify-center col-span-3">
+			<img
+				bind:offsetWidth={imageOffsetWidth}
+				bind:offsetHeight={imageOffsetHeight}
+				src={image}
+				class="max-h-96 w-auto"
+				alt="neko"
+			/>
+			{#if isImgLoaded}
+				<div style:width="{imageOffsetWidth}px" style:height="{imageOffsetHeight}px">
+					<CropBox />
+				</div>
+			{/if}
+		</div>
 
-	<div class="grid place-content-center gap-5">
-		<Forms maxWidth={store.image.offsetWidth} maxHeight={store.image.offsetHeight} />
-		<CropResult />
+		<div class="grid place-content-center gap-5">
+			<Forms maxWidth={store.image.offsetWidth} maxHeight={store.image.offsetHeight} />
+			<CropResult />
+		</div>
 	</div>
-</div>
+{/if}
 
 <style>
 	.stack {
