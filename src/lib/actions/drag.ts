@@ -39,6 +39,8 @@ export const drag = (element: HTMLElement, update?: Update) => {
 		const maxX = containerRect.width - draggableRect.width;
 		const maxY = containerRect.height - draggableRect.height;
 
+    console.log({maxX, maxY})
+
 		newX = Math.max(0, Math.min(newX, maxX));
 		newY = Math.max(0, Math.min(newY, maxY));
 

@@ -3,7 +3,7 @@ type Size = { offsetWidth: number; offsetHeight: number };
 type Store = {
 	x: number;
 	y: number;
-	image: string | null;
+	image: Size & { url: string | null},
 	cropBox: Size & { lockRatio: boolean };
 	container: Size
 };
@@ -11,7 +11,11 @@ type Store = {
 export const store: Store = $state({
 	x: 0,
 	y: 0,
-	image: null,
+	image: {
+    offsetHeight: 0,
+    offsetWidth: 0,
+    url: null
+  },
 	cropBox: {
 		lockRatio: false,
 		offsetWidth: 0,

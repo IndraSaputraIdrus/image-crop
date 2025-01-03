@@ -14,7 +14,7 @@
 		offsetHeight: store.container.offsetHeight
 	});
 
-	let imageUrl = $derived(store.image);
+	let imageUrl = $derived(store.image.url);
 
 	let isLoadedImg = $state(false);
 
@@ -27,8 +27,8 @@
 		const scaleY = image.height / container.offsetHeight;
 		const cropX = currentPosition.x * scaleX;
 		const cropY = currentPosition.y * scaleY;
-		const cropWidth = box.offsetWidth * scaleX;
-		const cropHeight = box.offsetHeight * scaleY;
+		const cropWidth = box.offsetWidth
+		const cropHeight = box.offsetHeight
 
 		canvas.width = box.offsetWidth;
 		canvas.height = box.offsetHeight;

@@ -5,8 +5,10 @@
 	let currentX = $state(0);
 	let currentY = $state(0);
 
-	let width = $derived(store.cropBox.offsetWidth);
-	let height = $derived(store.cropBox.offsetHeight);
+	const scaleX = store.container.offsetWidth / store.image.offsetWidth
+  const scaleY = store.container.offsetHeight / store.image.offsetHeight
+  let scaleWidth = $derived(store.cropBox.offsetWidth * scaleX)
+  let scaleHeight = $derived(store.cropBox.offsetHeight * scaleY)
 </script>
 
 <div
@@ -17,7 +19,7 @@
 		store.y = y;
 	}}
 	style:translate="{currentX}px {currentY}px"
-	style:width="{width}px"
-	style:height="{height}px"
+	style:width="{scaleWidth}px"
+	style:height="{scaleHeight}px"
 	class="border border-blue-500"
 ></div>
