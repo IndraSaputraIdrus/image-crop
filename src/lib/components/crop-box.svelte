@@ -2,13 +2,23 @@
 	import { drag } from '$lib/actions/drag';
 	import { store } from '$lib/store.svelte';
 
-	let currentX = $state(0);
-	let currentY = $state(0);
+  let cropBoxElement: undefined | HTMLElement = $state()
 
 	const scaleX = store.container.offsetWidth / store.image.offsetWidth;
 	const scaleY = store.container.offsetHeight / store.image.offsetHeight;
 	let scaleWidth = $derived(store.cropBox.offsetWidth * scaleX);
 	let scaleHeight = $derived(store.cropBox.offsetHeight * scaleY);
+
+  const handleOverflowRight = () => {
+    console.log(store.cropBox)
+  }
+
+  $effect(() => {
+    if(cropBoxElement) {
+      store.cropBox.offsetTop = cropBoxElement.offsetTop
+      store.cropBox.offsetLeft = cropBoxElement.offsetLeft
+    }
+  })
 </script>
 
 {#snippet button(position: string)}
@@ -26,17 +36,18 @@
 	></button>
 {/snippet}
 
+<div class='w-[100px] h-[100px] absolute bg-red-500'></div>
+
 <div
 	use:drag={({ x, y }) => {
-		currentX = x;
-		currentY = y;
 		store.x = x;
 		store.y = y;
 	}}
-	style:translate="{currentX}px {currentY}px"
+  bind:this={cropBoxElement}
+	style:translate="{store.x}px {store.y}px"
 	style:width="{scaleWidth}px"
 	style:height="{scaleHeight}px"
-	class="border border-blue-500 relative z-[999] cursor-move"
+	class="border border-blue-500 relative z-[999] cursor-move bg-black/70"
 >
 	{#each ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as position}
 		{@render button(position)}

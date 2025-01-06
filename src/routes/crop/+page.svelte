@@ -39,13 +39,13 @@
 	});
 </script>
 
-<div class="grid grid-cols-4 h-full">
+<div class="grid grid-cols-2 md:grid-cols-4 h-full">
 	{#if isLoading}
 		<div class="text-muted col-span-4 place-self-center">
 			<LoadingIcon class="size-16 animate-spin" />
 		</div>
 	{:else}
-		<div in:fade={{ duration: 200 }} class="stack flex items-center justify-center col-span-3">
+		<div in:fade={{ duration: 200 }} class="stack flex items-center justify-center col-span-2 md:col-span-3">
 			<div>
 				<ImagePreview bind:width={imageOffsetWidth} bind:height={imageOffsetHeight} src={image!} />
 			</div>

@@ -1,8 +1,9 @@
 type Update = ({ x, y }: { x: number; y: number }) => void;
 
 export const drag = (element: HTMLElement, update?: Update) => {
+  const init = element.getBoundingClientRect()
 	const start = { x: 0, y: 0 };
-	const current = { x: 0, y: 0 };
+	const current = { x: init.left, y: init.top };
 
 	let isDragging = false;
 
@@ -37,12 +38,8 @@ export const drag = (element: HTMLElement, update?: Update) => {
 		const maxX = containerRect.width - draggableRect.width;
 		const maxY = containerRect.height - draggableRect.height;
 
-    console.log({maxX, maxY})
-
 		newX = Math.max(0, Math.min(newX, maxX));
 		newY = Math.max(0, Math.min(newY, maxY));
-
-		console.log({ newX, newY, maxY, maxX });
 
 		// Update current positions
 		current.x = newX;
