@@ -8,8 +8,8 @@
 	let { maxHeight, maxWidth }: Props = $props();
 
 	const isLockRatio = $derived(store.cropBox.lockRatio);
-	let width: null | number = $state(store.cropBox.offsetWidth);
-	let height: null | number = $state(store.cropBox.offsetHeight);
+	let width: null | number = $state(null);
+	let height: null | number = $state(null);
 
 	const setWidth = (v: number | null) => {
     if(v === null) {
@@ -45,6 +45,12 @@
 			store.cropBox.offsetWidth = width;
 		}
 	};
+
+  $effect(() => {
+    width = store.cropBox.offsetWidth
+    height = store.cropBox.offsetHeight
+  })
+
 </script>
 
 <div class="flex flex-col gap-4 items-start text-foreground">
