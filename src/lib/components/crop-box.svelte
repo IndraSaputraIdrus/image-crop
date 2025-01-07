@@ -13,9 +13,49 @@
 		return value * scaleFactor;
 	};
 
+	const handleOverflow = (value: number, boxSize: number, maxSize: number, type: string) => {
+		if (!cropBoxElement) return value;
+
+		//const cropSize = value + scale(cropBoxStore.width, 'width');
+		//if (cropSize > imageStore.offsetWidth) {
+		//	const excess = cropSize - imageStore.offsetWidth;
+		//	value -= excess;
+		//}
+
+		const cropSize = value + scale(boxSize, type);
+		if (cropSize > maxSize) {
+			const excess = cropSize - maxSize;
+			value -= excess;
+		}
+
+		return value;
+	};
+
 	$effect(() => {
+		cropBoxStore.x = 0;
+		cropBoxStore.y = 0;
 		cropBoxStore.width = imageStore.naturalWidth;
 		cropBoxStore.height = imageStore.naturalHeight;
+	});
+
+	$effect(() => {
+		if (cropBoxStore.width) {
+			cropBoxStore.x = handleOverflow(
+				cropBoxStore.x,
+				cropBoxStore.width,
+				imageStore.offsetWidth,
+				'width'
+			);
+		}
+
+		if (cropBoxStore.height) {
+			cropBoxStore.y = handleOverflow(
+				cropBoxStore.y,
+				cropBoxStore.height,
+				imageStore.offsetHeight,
+				'height'
+			);
+		}
 	});
 </script>
 

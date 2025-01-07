@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cropBoxStore, imageStore } from '$lib/store.svelte';
-	let isLockRatio = $state(false);
+	let isLockRatio = $state(true);
 	let width: null | number = $state(null);
 	let height: null | number = $state(null);
 
@@ -25,8 +25,8 @@
 	};
 
 	$effect(() => {
-		width = imageStore.naturalWidth;
-		height = imageStore.naturalHeight;
+		width = cropBoxStore.width === 0 ? null : cropBoxStore.width;
+		height = cropBoxStore.height === 0 ? null : cropBoxStore.height;
 	});
 </script>
 
