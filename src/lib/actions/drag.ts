@@ -1,9 +1,13 @@
 type Update = ({ x, y }: { x: number; y: number }) => void;
 
-export const drag = (element: HTMLElement, update?: Update) => {
-  const init = element.getBoundingClientRect()
+type Params = {
+	initPosition: { x: number; y: number };
+	update?: Update;
+};
+
+export const drag = (element: HTMLElement, { initPosition, update }: Params) => {
 	const start = { x: 0, y: 0 };
-	const current = { x: init.left, y: init.top };
+	const current = { x: initPosition.x, y: initPosition.y };
 
 	let isDragging = false;
 

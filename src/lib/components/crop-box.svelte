@@ -75,9 +75,12 @@
 {/snippet}
 
 <div
-	use:drag={({ x, y }) => {
-		cropBoxStore.x = x;
-		cropBoxStore.y = y;
+	use:drag={{
+		initPosition: { x: cropBoxStore.x, y: cropBoxStore.y },
+		update: ({ x, y }) => {
+			cropBoxStore.x = x;
+			cropBoxStore.y = y;
+		}
 	}}
 	bind:this={cropBoxElement}
 	style:translate="{cropBoxStore.x}px {cropBoxStore.y}px"

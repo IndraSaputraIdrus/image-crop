@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { imageStore, cropBoxStore } from '$lib/store.svelte';
 
 	let files: FileList | undefined = $state();
 	const accept = ['.jpg', '.jpeg', '.png'];
@@ -14,10 +15,25 @@
 			goto(`/crop?image=${url}`);
 		}
 	});
+
+	$effect(() => {
+		imageStore.offsetHeight = 0;
+		imageStore.offsetWidth = 0;
+		imageStore.naturalHeight = 0;
+		imageStore.naturalWidth = 0;
+		imageStore.src = null;
+
+		cropBoxStore.width = 0;
+		cropBoxStore.height = 0;
+		cropBoxStore.x = 0;
+		cropBoxStore.y = 0;
+		cropBoxStore.offsetLeft = 0;
+		cropBoxStore.offsetTop = 0;
+	});
 </script>
 
 <div class="h-full grid place-content-center">
-	<div class='text-foreground p-10 rounded flex flex-col gap-10'>
+	<div class="text-foreground p-10 rounded flex flex-col gap-10">
 		<div class="space-y-5 mx-auto text-center">
 			<h1 class="text-3xl md:text-5xl font-semibold">Cropify Your Images.</h1>
 			<p class="text-base md:text-lg text-muted max-w-lg">
@@ -25,12 +41,12 @@
 			</p>
 		</div>
 
-		<form {onsubmit} class='flex items-center justify-center'>
+		<form {onsubmit} class="flex items-center justify-center">
 			<label
 				class={[
-          'mx-auto bg-foreground text-primary px-4 py-2 rounded-lg',
+					'mx-auto bg-foreground text-primary px-4 py-2 rounded-lg',
 					'transition ease-in-out duration-300',
-          'font-semibold',
+					'font-semibold',
 					'hover:bg-foreground/70 hover:cursor-pointer'
 				]}
 			>
