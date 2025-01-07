@@ -44,7 +44,7 @@
 		resizedWidth = width;
 		resizedHeight = width / ratio;
 
-		width = 450;
+		width = 2560;
 		oriWidth = width;
 		oriHeight = width / ratio;
 	});
@@ -57,7 +57,7 @@
 </script>
 
 <div class="p-5 h-screen">
-	<div class="h-full grid grid-cols-2 gap-5">
+	<div class="h-full grid grid-cols-1 gap-5">
 		<div class="border border-red-500 p-5 flex flex-col gap-5">
 			<h1 class="text-foreground mb-4">
 				Resized image (w: {resizedWidth}, h: {resizedHeight.toFixed(2)})

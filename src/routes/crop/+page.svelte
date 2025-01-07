@@ -2,40 +2,26 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { CropBox, CropResult, Forms, ImagePreview, LoadingIcon } from '$lib/components';
-	import { store } from '$lib/store.svelte';
+	import { store, imageStore } from '$lib/store.svelte';
 	import { fade } from 'svelte/transition';
 
-	let imageOffsetWidth = $state(0);
-	let imageOffsetHeight = $state(0);
-	let isImgLoaded = $derived(imageOffsetWidth > 0 || imageOffsetHeight > 0);
-	let image = $derived(page.url.searchParams.get('image'));
-	let isLoading = $state(true);
+	let isImgLoaded = $derived(imageStore.offsetWidth > 0);
+	let imageUrl = $derived(page.url.searchParams.get('image'));
+	let isLoading = $state(false);
 
 	$effect(() => {
-		if (!image) {
+		if (!imageUrl) {
 			goto('/');
+			return;
 		}
-	});
 
-	$effect(() => {
-		const imageOriginal = new Image();
-		imageOriginal.src = image!;
-
-		imageOriginal.onload = () => {
-			isLoading = false;
+		const image = new Image();
+		image.src = imageUrl;
+		image.onerror = () => {
+      return goto("/")
 		};
 
-		imageOriginal.onerror = () => {
-			goto('/');
-		};
-
-		store.image.offsetHeight = imageOriginal.height;
-		store.image.offsetWidth = imageOriginal.width;
-		store.container.offsetWidth = imageOffsetWidth;
-		store.container.offsetHeight = imageOffsetHeight;
-		store.cropBox.offsetWidth = imageOriginal.width;
-		store.cropBox.offsetHeight = imageOriginal.height;
-		store.image.url = image;
+		imageStore.src = imageUrl;
 	});
 </script>
 
@@ -45,12 +31,15 @@
 			<LoadingIcon class="size-16 animate-spin" />
 		</div>
 	{:else}
-		<div in:fade={{ duration: 200 }} class="stack flex items-center justify-center col-span-2 md:col-span-3">
+		<div
+			in:fade={{ duration: 200 }}
+			class="stack flex items-center justify-center col-span-2 md:col-span-3"
+		>
 			<div>
-				<ImagePreview bind:width={imageOffsetWidth} bind:height={imageOffsetHeight} src={image!} />
+				<ImagePreview />
 			</div>
 			{#if isImgLoaded}
-				<div style:width="{imageOffsetWidth}px" style:height="{imageOffsetHeight}px">
+				<div style:width="{imageStore.offsetWidth}px" style:height="{imageStore.offsetHeight}px">
 					<CropBox />
 				</div>
 			{/if}

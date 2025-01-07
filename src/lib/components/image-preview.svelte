@@ -1,17 +1,13 @@
 <script lang="ts">
-	type Props = {
-		width: number;
-		height: number;
-		src: string;
-	};
-
-	let { width = $bindable(), height = $bindable(), src }: Props = $props();
+	import { imageStore } from '$lib/store.svelte';
 </script>
 
 <img
-	bind:offsetWidth={width}
-	bind:offsetHeight={height}
+	bind:naturalHeight={imageStore.naturalHeight}
+	bind:naturalWidth={imageStore.naturalWidth}
+	bind:offsetWidth={imageStore.offsetWidth}
+	bind:offsetHeight={imageStore.offsetHeight}
+  src={imageStore?.src}
 	class="max-h-96 w-auto"
 	alt="preview"
-  {src}
 />

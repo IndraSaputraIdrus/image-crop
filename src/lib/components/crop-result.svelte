@@ -4,15 +4,9 @@
 
 	let currentPosition = $derived({ x: store.x, y: store.y });
 
-	let box = $derived({
-		offsetWidth: store.cropBox.offsetWidth,
-		offsetHeight: store.cropBox.offsetHeight
-	});
+	let box = $derived({ ...store.cropBox });
 
-	let container = $derived({
-		offsetWidth: store.container.offsetWidth,
-		offsetHeight: store.container.offsetHeight
-	});
+	let container = $derived({ ...store.container });
 
 	let imageUrl = $derived(store.image.url);
 
@@ -27,11 +21,11 @@
 		const scaleY = image.height / container.offsetHeight;
 		const cropX = currentPosition.x * scaleX;
 		const cropY = currentPosition.y * scaleY;
-		const cropWidth = box.offsetWidth
-		const cropHeight = box.offsetHeight
+		const cropWidth = box.offsetWidth * scaleX;
+		const cropHeight = box.offsetHeight * scaleY;
 
-		canvas.width = box.offsetWidth;
-		canvas.height = box.offsetHeight;
+		canvas.width = cropWidth;
+		canvas.height = cropHeight
 
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context.drawImage(

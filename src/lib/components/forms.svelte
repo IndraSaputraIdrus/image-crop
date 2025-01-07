@@ -11,20 +11,31 @@
 	let width: null | number = $state(null);
 	let height: null | number = $state(null);
 
+	const container = $derived({ ...store.container });
+	const original = $derived({ ...store.image });
+
+	const scaleToDown = (v: number, type: 'width' | 'height') => {
+		const scale =
+			type === 'width'
+				? container.offsetWidth / original.offsetWidth
+				: container.offsetHeight / original.offsetHeight;
+		return v * scale;
+	};
+
 	const setWidth = (v: number | null) => {
-    if(v === null) {
-      width = v
-      height = isLockRatio ? v : height
-      return
-    }
+		if (v === null) {
+			width = v;
+			height = isLockRatio ? v : height;
+			return;
+		}
 
 		v = Math.max(0, Math.min(v, maxWidth));
-		store.cropBox.offsetWidth = v;
+		store.cropBox.offsetWidth = scaleToDown(v, 'width');
 		width = v;
 
 		if (isLockRatio) {
 			height = Math.min(v, maxHeight);
-			store.cropBox.offsetHeight = height;
+			store.cropBox.offsetHeight = scaleToDown(height, 'height');
 		}
 	};
 
@@ -37,20 +48,19 @@
 
 		v = Math.max(0, Math.min(v, maxHeight));
 
-		store.cropBox.offsetHeight = v;
+		store.cropBox.offsetHeight = scaleToDown(v, 'height');
 		height = v;
 
 		if (isLockRatio) {
 			width = Math.min(v, maxWidth);
-			store.cropBox.offsetWidth = width;
+			store.cropBox.offsetWidth = scaleToDown(width, 'width');
 		}
 	};
 
-  $effect(() => {
-    width = store.cropBox.offsetWidth
-    height = store.cropBox.offsetHeight
-  })
-
+	$effect(() => {
+		width = store.image.offsetWidth;
+		height = store.image.offsetHeight;
+	});
 </script>
 
 <div class="flex flex-col gap-4 items-start text-foreground">
