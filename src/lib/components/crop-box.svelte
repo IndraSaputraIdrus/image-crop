@@ -4,9 +4,18 @@
 
 	let cropBoxElement: undefined | HTMLElement = $state();
 
+	const scale = (value: number, type: string): number => {
+		const scaleFactor =
+			type === 'width'
+				? imageStore.offsetWidth / imageStore.naturalWidth
+				: imageStore.offsetHeight / imageStore.naturalHeight;
+
+		return value * scaleFactor;
+	};
+
 	$effect(() => {
-		cropBoxStore.width = 200;
-    cropBoxStore.height = 200
+		cropBoxStore.width = imageStore.naturalWidth;
+		cropBoxStore.height = imageStore.naturalHeight;
 	});
 </script>
 
@@ -32,8 +41,8 @@
 	}}
 	bind:this={cropBoxElement}
 	style:translate="{cropBoxStore.x}px {cropBoxStore.y}px"
-	style:width="{cropBoxStore.width}px"
-	style:height="{cropBoxStore.height}px"
+	style:width="{scale(cropBoxStore.width, 'width')}px"
+	style:height="{scale(cropBoxStore.height, 'height')}px"
 	class="border border-blue-500 relative z-[999] cursor-move bg-black/70"
 >
 	{#each ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as position}

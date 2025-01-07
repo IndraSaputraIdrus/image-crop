@@ -1,65 +1,32 @@
 <script lang="ts">
-	import { store } from '$lib/store.svelte';
-
-	type Props = {
-		maxWidth: number;
-		maxHeight: number;
-	};
-	let { maxHeight, maxWidth }: Props = $props();
-
-	const isLockRatio = $derived(store.cropBox.lockRatio);
+	import { cropBoxStore, imageStore } from '$lib/store.svelte';
+	let isLockRatio = $state(false);
 	let width: null | number = $state(null);
 	let height: null | number = $state(null);
 
-	const container = $derived({ ...store.container });
-	const original = $derived({ ...store.image });
-
-	const scaleToDown = (v: number, type: 'width' | 'height') => {
-		const scale =
-			type === 'width'
-				? container.offsetWidth / original.offsetWidth
-				: container.offsetHeight / original.offsetHeight;
-		return v * scale;
-	};
-
-	const setWidth = (v: number | null) => {
-		if (v === null) {
-			width = v;
-			height = isLockRatio ? v : height;
-			return;
+	const handleValue = (value: number | null, type: string, fromLockRatio = false) => {
+		if (type === 'width') {
+			value = value ? Math.max(0, Math.min(value, imageStore.naturalWidth)) : value;
+			width = value;
+			cropBoxStore.width = value ?? 0;
+			if (isLockRatio && !fromLockRatio) {
+				handleValue(value, 'height', true);
+			}
 		}
 
-		v = Math.max(0, Math.min(v, maxWidth));
-		store.cropBox.offsetWidth = scaleToDown(v, 'width');
-		width = v;
-
-		if (isLockRatio) {
-			height = Math.min(v, maxHeight);
-			store.cropBox.offsetHeight = scaleToDown(height, 'height');
-		}
-	};
-
-	const setHeight = (v: number | null) => {
-		if (v === null) {
-			height = v;
-			width = isLockRatio ? v : width;
-			return;
-		}
-
-		v = Math.max(0, Math.min(v, maxHeight));
-
-		store.cropBox.offsetHeight = scaleToDown(v, 'height');
-		height = v;
-
-		if (isLockRatio) {
-			width = Math.min(v, maxWidth);
-			store.cropBox.offsetWidth = scaleToDown(width, 'width');
+		if (type === 'height') {
+			value = value ? Math.max(0, Math.min(value, imageStore.naturalHeight)) : value;
+			height = value;
+			cropBoxStore.height = value ?? 0;
+			if (isLockRatio && !fromLockRatio) {
+				handleValue(value, 'width', true);
+			}
 		}
 	};
 
 	$effect(() => {
-		width = store.image.offsetWidth;
-		height = store.image.offsetHeight;
+		width = imageStore.naturalWidth;
+		height = imageStore.naturalHeight;
 	});
 </script>
 
@@ -70,7 +37,7 @@
 			class="border border-black p-2 w-full text-primary"
 			type="number"
 			placeholder="width"
-			bind:value={() => width, setWidth}
+			bind:value={() => width, (v) => handleValue(v, 'width')}
 		/>
 	</label>
 	<label class="flex flex-col w-full">
@@ -78,12 +45,12 @@
 		<input
 			class="border border-black p-2 text-primary"
 			type="number"
-			bind:value={() => height, setHeight}
 			placeholder="height"
+			bind:value={() => height, (v) => handleValue(v, 'height')}
 		/>
 	</label>
 	<label>
-		<input type="checkbox" bind:checked={store.cropBox.lockRatio} />
+		<input type="checkbox" bind:checked={isLockRatio} />
 		<span>Lock ratio</span>
 	</label>
 </div>
