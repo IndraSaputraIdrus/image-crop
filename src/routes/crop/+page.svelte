@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { CropBox, CropResult, Forms, ImagePreview, LoadingIcon } from '$lib/components';
-	import { store, imageStore } from '$lib/store.svelte';
+	import { imageStore } from '$lib/store.svelte';
 	import { fade } from 'svelte/transition';
 
 	let isImgLoaded = $derived(imageStore.offsetWidth > 0);
@@ -45,7 +45,7 @@
 			{/if}
 		</div>
 		<div in:fade={{ duration: 200 }} class="grid place-content-center gap-5">
-			<Forms maxWidth={store.image.offsetWidth} maxHeight={store.image.offsetHeight} />
+			<Forms />
 			<CropResult />
 		</div>
 	{/if}

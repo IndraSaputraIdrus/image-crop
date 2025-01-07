@@ -1,68 +1,67 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { store } from '$lib/store.svelte';
+	import { cropBoxStore, imageStore } from '$lib/store.svelte';
 
-	let currentPosition = $derived({ x: store.x, y: store.y });
+	const naturalWidth = $derived(imageStore.naturalWidth);
+	const naturalHeight = $derived(imageStore.naturalHeight);
+	const offsetWidht = $derived(imageStore.offsetWidth);
+	const offsetHeight = $derived(imageStore.offsetHeight);
+	const imageUrl = $derived(imageStore.src);
 
-	let box = $derived({ ...store.cropBox });
+	const boxWidth = $derived(cropBoxStore.width);
+	const boxHeight = $derived(cropBoxStore.height);
+	const positionX = $derived(cropBoxStore.x);
+	const positionY = $derived(cropBoxStore.y);
 
-	let container = $derived({ ...store.container });
+	const drawImage = (image: HTMLImageElement) => {
+		const scaleX = naturalWidth / offsetWidht;
+		const scaleY = naturalHeight / offsetHeight;
+		const cropX = positionX * scaleX;
+		const cropY = positionY * scaleY;
 
-	let imageUrl = $derived(store.image.url);
+		const canvas = document.createElement('canvas');
+		canvas.width = boxWidth;
+		canvas.height = boxHeight;
 
-	let isLoadedImg = $state(false);
-
-	let canvas: HTMLCanvasElement;
-	let context: CanvasRenderingContext2D;
-	let image: HTMLImageElement;
-
-	function drawImage() {
-		const scaleX = image.width / container.offsetWidth;
-		const scaleY = image.height / container.offsetHeight;
-		const cropX = currentPosition.x * scaleX;
-		const cropY = currentPosition.y * scaleY;
-		const cropWidth = box.offsetWidth * scaleX;
-		const cropHeight = box.offsetHeight * scaleY;
-
-		canvas.width = cropWidth;
-		canvas.height = cropHeight
-
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.drawImage(
-			image,
-			cropX,
-			cropY,
-			cropWidth,
-			cropHeight,
-			0,
-			0,
-			canvas.width,
-			canvas.height
-		);
+		const context = canvas.getContext('2d')!;
+		context.clearRect(0, 0, boxWidth, boxHeight);
+		context.drawImage(image, cropX, cropY, boxWidth, boxHeight, 0, 0, boxWidth, boxHeight);
 
 		return canvas.toDataURL('image/jpeg', 100);
-	}
+	};
 
-	$effect(() => {
-		if (imageUrl) {
-			canvas = document.createElement('canvas');
-			context = canvas.getContext('2d')!;
-			image = new Image();
-			image.src = imageUrl;
-			image.onload = () => (isLoadedImg = true);
-		}
-	});
+	const download = (dataUrl: string) => {
+		const a = document.createElement('a');
+		a.href = dataUrl;
+		a.download = 'Image.jpeg';
+		a.click();
+	};
 
-	function cropAndDownload() {
-		const result = drawImage();
-		const link = document.createElement('a');
-		link.href = result;
-		link.download = 'image.jpeg';
-		link.click();
-	}
+	const cropImage = () => {
+		if (!imageUrl) return;
+		const image = new Image();
+		image.src = imageUrl;
+
+		image.onerror = (e) => {
+			console.log(e);
+		};
+
+		image.onload = () => {
+      const data = drawImage(image)
+			download(data);
+		};
+	};
 </script>
 
-{#if isLoadedImg}
-	<button class="bg-blue-500 text-blue-100 rounded p-2" onclick={cropAndDownload}>Crop Image</button
-	>
-{/if}
+<button
+	onclick={cropImage}
+	class={[
+		'bg-blue-800 text-foreground',
+		'p-2 rounded',
+		'text-lg font-medium',
+    'transition',
+		'hover:bg-blue-800/70',
+    'focus:outline-none focus:ring focus:ring-blue-200'
+	]}
+>
+	Crop Image
+</button>
