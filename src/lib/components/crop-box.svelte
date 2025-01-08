@@ -86,7 +86,7 @@
 	style:translate="{cropBoxStore.x}px {cropBoxStore.y}px"
 	style:width="{scale(cropBoxStore.width, 'width')}px"
 	style:height="{scale(cropBoxStore.height, 'height')}px"
-	class="border border-blue-500 relative z-[999] cursor-move bg-black/50"
+	class="absolute border border-blue-500 z-[999] cursor-move bg-black/50 inset-0"
 >
 	{#each ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as position}
 		{@render button(position)}

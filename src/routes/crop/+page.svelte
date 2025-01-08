@@ -7,6 +7,7 @@
 
 	let isImgLoaded = $derived(imageStore.offsetWidth > 0);
 	let imageUrl = $derived(page.url.searchParams.get('image') ?? null);
+	let isLoading = $state(true);
 
 	$effect(() => {
 		if (!imageUrl) {
@@ -16,44 +17,29 @@
 
 		const image = new Image();
 		image.src = imageUrl;
+
 		image.onerror = () => {
 			return goto('/');
 		};
-	});
 
-	$effect(() => {
-		if (imageUrl) {
+		image.onload = () => {
 			imageStore.src = imageUrl;
-		}
+			imageStore.naturalHeight = image.naturalHeight;
+			imageStore.naturalWidth = image.naturalWidth;
+			isLoading = false;
+		};
 	});
 </script>
 
-<div class="min-h-dvh grid grid-cols-1 md:grid-cols-4 w-full py-5">
-	<div in:fade={{ duration: 200 }} class="stack md:col-span-3 px-3">
-		{#if imageStore.src}
-			<div>
-				<ImagePreview />
-			</div>
-		{/if}
-		{#if isImgLoaded}
-			<div style:width="{imageStore.offsetWidth}px" style:height="{imageStore.offsetHeight}px">
-				<CropBox />
-			</div>
-		{/if}
-	</div>
-	<div in:fade={{ duration: 200 }} class="grid gap-5 px-3 w-full sm:w-auto md:place-content-center">
-		<Forms />
-		<CropResult />
+<div class="h-dvh px-5 md:px-8 py-5 md:py-10">
+	<div class={['h-full', 'flex flex-col', 'md:flex-row justify-center', 'gap-5 items-center']}>
+		<div class="relative">
+			<ImagePreview />
+      <CropBox />
+		</div>
+		<div class='flex flex-col gap-4'>
+			<Forms />
+			<CropResult />
+		</div>
 	</div>
 </div>
-
-<style>
-	.stack {
-		display: grid;
-		place-content: center;
-
-		> * {
-			grid-area: 1 / 1;
-		}
-	}
-</style>

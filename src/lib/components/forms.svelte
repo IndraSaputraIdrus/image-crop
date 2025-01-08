@@ -28,29 +28,32 @@
 		width = cropBoxStore.width === 0 ? null : cropBoxStore.width;
 		height = cropBoxStore.height === 0 ? null : cropBoxStore.height;
 	});
+
+  const inputStyle = "border border-foreground text-foreground bg-primary p-2 rounded-md"
+  const labelStyle = "text-sm text-foreground mb-1"
 </script>
 
 <div class="flex flex-col gap-4 items-start text-foreground">
 	<label class="flex flex-col w-full">
-		<span>Width</span>
+		<span class={labelStyle}>Width</span>
 		<input
-			class="border border-black p-2 w-full text-primary"
+			class={inputStyle}
 			type="number"
 			placeholder="width"
 			bind:value={() => width, (v) => handleValue(v, 'width')}
 		/>
 	</label>
 	<label class="flex flex-col w-full">
-		<span>Height</span>
+		<span class={labelStyle}>Height</span>
 		<input
-			class="border border-black p-2 text-primary"
+			class={inputStyle}
 			type="number"
 			placeholder="height"
 			bind:value={() => height, (v) => handleValue(v, 'height')}
 		/>
 	</label>
-	<label>
+	<label class='flex items-center gap-2'>
 		<input type="checkbox" bind:checked={isLockRatio} />
-		<span>Lock ratio</span>
+		<span class='text-sm text-foreground'>Lock ratio</span>
 	</label>
 </div>

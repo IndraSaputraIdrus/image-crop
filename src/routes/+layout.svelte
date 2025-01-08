@@ -8,6 +8,6 @@
 	let { children } = $props();
 </script>
 
-<main class="container mx-auto text-[var(--bg-primary)]">
+<main class="max-w-6xl mx-auto text-[var(--bg-primary)]">
 	{@render children()}
 </main>
