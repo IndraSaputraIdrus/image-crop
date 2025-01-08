@@ -32,7 +32,7 @@
 	});
 </script>
 
-<div class="h-full grid place-content-center">
+<div class="min-h-dvh grid place-content-center">
 	<div class="text-foreground p-10 rounded flex flex-col gap-10">
 		<div class="space-y-5 mx-auto text-center">
 			<h1 class="text-3xl md:text-5xl font-semibold">Cropify Your Images.</h1>

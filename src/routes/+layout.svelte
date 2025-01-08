@@ -6,12 +6,8 @@
 
 	import '../app.css';
 	let { children } = $props();
-
-//<main class="container mx-auto py-10 h-full text-[var(--bg-primary)]">
-//	{@render children()}
-//</main>
-
 </script>
 
-{@render children()}
-
+<main class="container mx-auto text-[var(--bg-primary)]">
+	{@render children()}
+</main>

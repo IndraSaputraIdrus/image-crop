@@ -6,8 +6,7 @@
 	import { fade } from 'svelte/transition';
 
 	let isImgLoaded = $derived(imageStore.offsetWidth > 0);
-	let imageUrl = $derived(page.url.searchParams.get('image'));
-	let isLoading = $state(false);
+	let imageUrl = $derived(page.url.searchParams.get('image') ?? null);
 
 	$effect(() => {
 		if (!imageUrl) {
@@ -18,37 +17,34 @@
 		const image = new Image();
 		image.src = imageUrl;
 		image.onerror = () => {
-      return goto("/")
+			return goto('/');
 		};
+	});
 
-		imageStore.src = imageUrl;
+	$effect(() => {
+		if (imageUrl) {
+			imageStore.src = imageUrl;
+		}
 	});
 </script>
 
-<div class="grid grid-cols-2 md:grid-cols-4 h-full">
-	{#if isLoading}
-		<div class="text-muted col-span-4 place-self-center">
-			<LoadingIcon class="size-16 animate-spin" />
-		</div>
-	{:else}
-		<div
-			in:fade={{ duration: 200 }}
-			class="stack flex items-center justify-center col-span-2 md:col-span-3"
-		>
+<div class="min-h-dvh grid grid-cols-1 md:grid-cols-4 w-full py-5">
+	<div in:fade={{ duration: 200 }} class="stack md:col-span-3 px-3">
+		{#if imageStore.src}
 			<div>
 				<ImagePreview />
 			</div>
-			{#if isImgLoaded}
-				<div style:width="{imageStore.offsetWidth}px" style:height="{imageStore.offsetHeight}px">
-					<CropBox />
-				</div>
-			{/if}
-		</div>
-		<div in:fade={{ duration: 200 }} class="grid place-content-center gap-5">
-			<Forms />
-			<CropResult />
-		</div>
-	{/if}
+		{/if}
+		{#if isImgLoaded}
+			<div style:width="{imageStore.offsetWidth}px" style:height="{imageStore.offsetHeight}px">
+				<CropBox />
+			</div>
+		{/if}
+	</div>
+	<div in:fade={{ duration: 200 }} class="grid gap-5 px-3 w-full sm:w-auto md:place-content-center">
+		<Forms />
+		<CropResult />
+	</div>
 </div>
 
 <style>
