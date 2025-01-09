@@ -5,30 +5,45 @@ type Params = {
 	update?: Update;
 };
 
+const getEventClientPosition = (e: MouseEvent | TouchEvent) => {
+	if (e instanceof TouchEvent) {
+		const touch = e.touches[0] || e.changedTouches[0];
+		return { clientX: touch.clientX, clientY: touch.clientY };
+	}
+	return { clientX: e.clientX, clientY: e.clientY };
+};
+
 export const drag = (element: HTMLElement, { initPosition, update }: Params) => {
 	const start = { x: 0, y: 0 };
 	const current = { x: initPosition.x, y: initPosition.y };
 
 	let isDragging = false;
 
-	const handleMouseDown = (e: MouseEvent) => {
+	const handlePointerDown = (e: MouseEvent | TouchEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
 
 		isDragging = true;
 
-		start.x = e.clientX;
-		start.y = e.clientY;
+		const { clientX, clientY } = getEventClientPosition(e);
 
-		document.addEventListener('mousemove', handleMouseMove);
-		document.addEventListener('mouseup', handleMouseUp);
+		start.x = clientX;
+		start.y = clientY;
+
+		document.addEventListener('mousemove', handlePointerMove);
+		document.addEventListener('mouseup', handlePointerUp);
+
+		document.addEventListener('touchmove', handlePointerMove);
+		document.addEventListener('touchend', handlePointerUp);
 	};
 
-	const handleMouseMove = (e: MouseEvent) => {
+	const handlePointerMove = (e: MouseEvent | TouchEvent) => {
 		if (!isDragging) return;
 
-		const dx = e.clientX - start.x;
-		const dy = e.clientY - start.y;
+		const { clientY, clientX } = getEventClientPosition(e);
+
+		const dx = clientX - start.x;
+		const dy = clientY - start.y;
 
 		// Calculate new positions
 		let newX = current.x + dx;
@@ -49,25 +64,30 @@ export const drag = (element: HTMLElement, { initPosition, update }: Params) => 
 		current.x = newX;
 		current.y = newY;
 
-		start.x = e.clientX;
-		start.y = e.clientY;
+		start.x = clientX;
+		start.y = clientY;
 
 		update?.({ x: current.x, y: current.y });
 	};
 
-	const handleMouseUp = () => {
+	const handlePointerUp = () => {
 		if (isDragging) {
 			isDragging = false;
-			document.removeEventListener('mousemove', handleMouseMove);
-			document.removeEventListener('mouseup', handleMouseUp);
+			document.removeEventListener('mousemove', handlePointerMove);
+			document.removeEventListener('mouseup', handlePointerUp);
+
+			document.removeEventListener('touchmove', handlePointerMove);
+			document.removeEventListener('touchend', handlePointerUp);
 		}
 	};
 
-	element.addEventListener('mousedown', handleMouseDown);
+	element.addEventListener('mousedown', handlePointerDown);
+	element.addEventListener('touchstart', handlePointerDown);
 
 	return {
 		destroy() {
-			element.removeEventListener('mousedown', handleMouseDown);
+			element.removeEventListener('mousedown', handlePointerDown);
+			element.removeEventListener('touchstart', handlePointerDown);
 		}
 	};
 };
