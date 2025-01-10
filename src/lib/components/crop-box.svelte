@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { drag } from '$lib/actions/drag';
 	import { imageStore, cropBoxStore } from '$lib/store.svelte';
+	import { Spring } from 'svelte/motion';
 
 	let cropBoxElement: undefined | HTMLElement = $state();
+
+  const springWidth = Spring.of(() => cropBoxStore.width)
+  const springHeight = Spring.of(() => cropBoxStore.height)
+  const springX = Spring.of(() => cropBoxStore.x)
+  const springY = Spring.of(() => cropBoxStore.y)
 
 	const scale = (value: number, type: string): number => {
 		const scaleFactor =
@@ -83,9 +89,9 @@
 		}
 	}}
 	bind:this={cropBoxElement}
-	style:translate="{cropBoxStore.x}px {cropBoxStore.y}px"
-	style:width="{scale(cropBoxStore.width, 'width')}px"
-	style:height="{scale(cropBoxStore.height, 'height')}px"
+	style:translate="{springX.current}px {springY.current}px"
+	style:width="{scale(springWidth.current, 'width')}px"
+	style:height="{scale(springHeight.current, 'height')}px"
 	class="absolute border border-blue-500 z-[999] cursor-move bg-black/50 inset-0"
 >
 	{#each ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as position}
